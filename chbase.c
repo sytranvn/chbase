@@ -26,13 +26,13 @@ const char *b64d =
 char *chbase(const char *value, int from, int to) {
   unsigned long l = strlen(value);
   unsigned long tl = cal_digits(l, from, to);
-  char *out = malloc(tl + 1 * sizeof(char));
-  if (!out) {
+  char *temp = malloc(tl + 1 * sizeof(char));
+  if (!temp) {
     fprintf(stderr, "Out of memory.\n");
-    return out;
+    return temp;
   }
-  memset(out, '0', tl);
-  out[tl] = '\0';
+  memset(temp, '0', tl);
+  temp[tl] = '\0';
 
   unsigned long long a = 0;
   unsigned long i = 0;
@@ -41,11 +41,16 @@ char *chbase(const char *value, int from, int to) {
     i++;
   }
 
-  i = tl;
+  i = tl-1;
   do {
-    out[i] = d[a % to];
+    temp[i] = d[a % to];
     a = a / to;
     i--;
   } while (a > 0);
+
+  char*out = malloc(tl -i +1);
+  strcpy(out, temp + i + 1);
+  free(temp);
+  
   return out;
 };
